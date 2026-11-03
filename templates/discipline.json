@@ -1,0 +1,6 @@
+{
+  "experiment_patterns": ["\\btrain\\.py\\b", "\\bcreate_vm\\.sh\\b.*--yes"],
+  "verdict_patterns": ["verdict\\.py\\s+judge"],
+  "results_globs": ["docs/results/*.md", "docs/*-results-*.md"],
+  "prereg_token": "RAK_PREREG"
+}

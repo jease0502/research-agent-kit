@@ -1,0 +1,46 @@
+{
+ "schema": 1,
+ "id": "minimax",
+ "vendor": "MiniMax, international",
+ "tested_by_us": false,
+ "status_note": "Not tested by us. Everything here is copied from the vendor's pages on the dates given; run `python -m rak.models control minimax` before relying on it.",
+ "endpoint": "https://api.minimax.io/anthropic",
+ "auth": "key",
+ "key_env": "RAK_KEY_MINIMAX",
+ "key_target": "ANTHROPIC_API_KEY",
+ "models": {
+  "main": "MiniMax-M3",
+  "opus": "MiniMax-M3",
+  "sonnet": "MiniMax-M3",
+  "haiku": "MiniMax-M3.1-Flash",
+  "subagent": "MiniMax-M3"
+ },
+ "env": {
+  "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1",
+  "ENABLE_TOOL_SEARCH": "false",
+  "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+ },
+ "claude_code": {
+  "min": "2.1.295",
+  "pin": "2.1.316",
+  "why": "min: the kit's hooks need onFailure: block (2.1.295+). pin: the version the kit was last developed against (2026-11-01); not tested with this endpoint by us."
+ },
+ "limits": [
+  {"text": "the Anthropic interface serves only MiniMax-M3.1-Flash and MiniMax-M3; the page does not mention Claude Code, so the model-role mapping here is ours", "source": "https://platform.minimax.io/docs/api-reference/text-anthropic-api"},
+  {"text": "MiniMax-M3.1-Flash always thinks; sending thinking disabled returns 400. Effort none returns 400; an omitted effort defaults to max", "source": "https://platform.minimax.io/docs/api-reference/text-anthropic-api"},
+  {"text": "temperature has no effect (always 1); top_p is fixed at 0.95; top_k, stop_sequences, mcp_servers, context_management and container are ignored", "source": "https://platform.minimax.io/docs/api-reference/text-anthropic-api"},
+  {"text": "thinking tokens count toward max_tokens; a low value can stop with max_tokens and no text", "source": "https://platform.minimax.io/docs/api-reference/text-anthropic-api"},
+  {"text": "Anthropic does not support routing Claude Code to non-Claude models; treat every Claude Code upgrade as untested until the positive control passes", "source": "https://code.claude.com/docs/en/llm-gateway"}
+ ],
+ "data_policy": {
+  "where": "not verified",
+  "training": "not verified",
+  "retention": "not verified",
+  "source": null,
+  "read_on": "2026-10-31",
+  "verified": "not verified: the primary privacy page did not render for us"
+ },
+ "sources": [
+  {"url": "https://platform.minimax.io/docs/api-reference/text-anthropic-api", "read_on": "2026-11-01", "what": "endpoint, models, ignored fields"}
+ ]
+}

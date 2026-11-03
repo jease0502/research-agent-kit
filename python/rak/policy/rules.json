@@ -1,0 +1,20 @@
+{
+  "rules": [
+    {"id": "D1-D2", "plugin": "rak-discipline", "on": ["shell"], "check": "discipline.launch", "decision": "deny",
+     "covers": "an experiment launch carries RAK_PREREG=<id>, frozen, with its prereg, verdict script, frozen files and trees unchanged"},
+    {"id": "D3-D4", "plugin": "rak-discipline", "on": ["shell"], "check": "discipline.verdict", "decision": "deny",
+     "covers": "reading results carries the id, and its gate is PASS against the frozen files"},
+    {"id": "D5", "plugin": "rak-discipline", "on": ["shell"], "check": "discipline.results_shell", "decision": "deny",
+     "covers": "no shell edit or delete of a committed results doc"},
+    {"id": "D6", "plugin": "rak-discipline", "on": ["file.edit", "file.write"], "check": "discipline.results_edit", "decision": "deny",
+     "covers": "an edit of a committed results doc keeps every committed body line"},
+    {"id": "T1-T3", "plugin": "rak-team", "on": ["shell"], "check": "git.whole_tree", "decision": "deny",
+     "covers": "no whole-tree git add / commit -a in a shared working tree"},
+    {"id": "C1", "plugin": "rak-cloud", "on": ["file.edit", "file.write", "notebook.edit"], "check": "trees.file", "decision": "deny",
+     "covers": "no file tool under the plugin's trees/"},
+    {"id": "C2", "plugin": "rak-cloud", "on": ["shell"], "check": "trees.shell", "decision": "deny",
+     "covers": "no command naming a lifecycle tree unless it starts read-only"},
+    {"id": "P1", "plugin": "rak-policy", "on": ["file.edit", "file.write", "notebook.edit"], "check": "policy.protected", "decision": "deny",
+     "covers": "no file tool writes the policy engine, its rules, the hooks, .rak/, .claude/ or .mcp.json"}
+  ]
+}

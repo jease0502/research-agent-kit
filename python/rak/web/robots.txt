@@ -1,0 +1,7 @@
+# 這個站含 fulltext-zh/ 的論文全文中文翻譯（Cloud Run 版才有，見 CLAUDE.md §8）。
+# 翻譯是原文的改作，不該被搜尋引擎收錄、快取或存進網頁封存。
+#
+# robots.txt 只是「請求」，不是存取控制 —— 守規矩的爬蟲會遵守，惡意的不會。
+# 真正的存取控制要靠 deploy.sh --private 或應用層登入。
+User-agent: *
+Disallow: /

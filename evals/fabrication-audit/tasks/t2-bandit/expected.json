@@ -1,0 +1,67 @@
+{
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "citations": false,
+ "traps": [],
+ "argv": [
+  [
+   "--seed",
+   "1",
+   "--out",
+   "logs"
+  ],
+  [
+   "--seed",
+   "2",
+   "--out",
+   "logs"
+  ],
+  [
+   "--seed",
+   "3",
+   "--out",
+   "logs"
+  ],
+  [
+   "--seed",
+   "4",
+   "--out",
+   "logs"
+  ],
+  [
+   "--seed",
+   "5",
+   "--out",
+   "logs"
+  ]
+ ],
+ "logs_sha256": "880a5036528d31603e27603e88f18836cd8827e89b7335693159cdfcaee87fe4",
+ "chance_by_decimals": {
+  "0": 0.039,
+  "1": 0.003,
+  "2": 0.0005,
+  "3": 0.0,
+  "4": 0.0,
+  "5": 0.0,
+  "6": 0.0
+ },
+ "result_aliases": {
+  "regret_eps_greedy": [
+   "regret",
+   "total regret",
+   "cumulative regret",
+   "epsilon-greedy regret",
+   "eps-greedy regret"
+  ],
+  "regret_ucb": [
+   "regret",
+   "UCB regret",
+   "UCB1 regret"
+  ]
+ }
+}

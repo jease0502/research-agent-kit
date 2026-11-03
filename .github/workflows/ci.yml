@@ -1,0 +1,73 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  deny-list:
+    # Runs first and alone: nothing else should even build if private material slipped in.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # --history needs every commit
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: scan working tree and history
+        # The private-name list never lives in the repo, not even hashed. It comes from the repository
+        # secret RAK_DENY_TERMS (one term per line). Without it the scan fails in CI on purpose:
+        # "no list" must not read as "no private names". Pull requests from forks get no secrets and fail
+        # here; a maintainer re-runs them from a branch.
+        # Approved commit identities (exact "Name <email>", one per line) come from the secret
+        # RAK_ALLOW_IDENTITIES; without it every author and committer field is scanned as before.
+        env:
+          RAK_DENY_TERMS: ${{ secrets.RAK_DENY_TERMS }}
+          RAK_ALLOW_IDENTITIES_LIST: ${{ secrets.RAK_ALLOW_IDENTITIES }}
+        run: |
+          umask 077
+          printf '%s\n' "$RAK_DENY_TERMS" > "$RUNNER_TEMP/deny.txt"
+          printf '%s\n' "$RAK_ALLOW_IDENTITIES_LIST" > "$RUNNER_TEMP/allow_identities.txt"
+          RAK_DENY_FILE="$RUNNER_TEMP/deny.txt" RAK_ALLOW_IDENTITIES="$RUNNER_TEMP/allow_identities.txt" \
+            python scripts/scan_private.py --history
+
+  tests:
+    needs: deny-list
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e "python[test]"
+      - name: rak library
+        run: python -m pytest -q python/tests
+      - name: deny-list scanner
+        env:
+          RAK_DENY_TERMS: ${{ secrets.RAK_DENY_TERMS }}
+        run: |
+          umask 077
+          printf '%s\n' "$RAK_DENY_TERMS" > "$RUNNER_TEMP/deny.txt"
+          RAK_DENY_FILE="$RUNNER_TEMP/deny.txt" python -m pytest -q scripts/tests
+      # `if` rather than `[ -d ] && …`: with the latter, a glob that matches nothing leaves the loop's last
+      # status at 1 and fails the step for no reason.
+      - name: plugin tests
+        run: |
+          for d in plugins/*/tests; do
+            if [ -d "$d" ]; then python -m pytest -q "$d"; fi
+          done
+      - name: eval tests (CPU parts only; no agent, no network)
+        run: |
+          for d in evals/*/tests; do
+            if [ -d "$d" ]; then python -m pytest -q "$d"; fi
+          done
+      - name: example tests
+        # run inside each example: its tests find experiments/ by relative path
+        run: |
+          for d in examples/*/tests; do
+            if [ -d "$d" ]; then (cd "$(dirname "$d")" && python -m pytest -q tests); fi
+          done

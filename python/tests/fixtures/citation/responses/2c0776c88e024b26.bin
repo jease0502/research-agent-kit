@@ -1,0 +1,270 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/iZ/NQ7w1mMgOV9kDbDWaPhTnSjE</id>
+  <title>arXiv Query: search_query=&amp;id_list=1312.5602,1707.06347,1810.04805,2307.15818,2399.99999&amp;start=0&amp;max_results=5</title>
+  <updated>2026-10-30T20:19:44Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=5&amp;id_list=1312.5602,1707.06347,1810.04805,2307.15818,2399.99999" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>5</opensearch:itemsPerPage>
+  <opensearch:totalResults>4</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/1810.04805v2</id>
+    <title>BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</title>
+    <updated>2019-05-24T20:37:26Z</updated>
+    <link href="https://arxiv.org/abs/1810.04805v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1810.04805v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We introduce a new language representation model called BERT, which stands for Bidirectional Encoder Representations from Transformers. Unlike recent language representation models, BERT is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers. As a result, the pre-trained BERT model can be fine-tuned with just one additional output layer to create state-of-the-art models for a wide range of tasks, such as question answering and language inference, without substantial task-specific architecture modifications.
+  BERT is conceptually simple and empirically powerful. It obtains new state-of-the-art results on eleven natural language processing tasks, including pushing the GLUE score to 80.5% (7.7% point absolute improvement), MultiNLI accuracy to 86.7% (4.6% absolute improvement), SQuAD v1.1 question answering Test F1 to 93.2 (1.5 point absolute improvement) and SQuAD v2.0 Test F1 to 83.1 (5.1 point absolute improvement).</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2018-10-11T00:50:01Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Jacob Devlin</name>
+    </author>
+    <author>
+      <name>Ming-Wei Chang</name>
+    </author>
+    <author>
+      <name>Kenton Lee</name>
+    </author>
+    <author>
+      <name>Kristina Toutanova</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1707.06347v2</id>
+    <title>Proximal Policy Optimization Algorithms</title>
+    <updated>2017-08-28T09:20:06Z</updated>
+    <link href="https://arxiv.org/abs/1707.06347v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1707.06347v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We propose a new family of policy gradient methods for reinforcement learning, which alternate between sampling data through interaction with the environment, and optimizing a "surrogate" objective function using stochastic gradient ascent. Whereas standard policy gradient methods perform one gradient update per data sample, we propose a novel objective function that enables multiple epochs of minibatch updates. The new methods, which we call proximal policy optimization (PPO), have some of the benefits of trust region policy optimization (TRPO), but they are much simpler to implement, more general, and have better sample complexity (empirically). Our experiments test PPO on a collection of benchmark tasks, including simulated robotic locomotion and Atari game playing, and we show that PPO outperforms other online policy gradient methods, and overall strikes a favorable balance between sample complexity, simplicity, and wall-time.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2017-07-20T02:32:33Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>John Schulman</name>
+    </author>
+    <author>
+      <name>Filip Wolski</name>
+    </author>
+    <author>
+      <name>Prafulla Dhariwal</name>
+    </author>
+    <author>
+      <name>Alec Radford</name>
+    </author>
+    <author>
+      <name>Oleg Klimov</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1312.5602v1</id>
+    <title>Playing Atari with Deep Reinforcement Learning</title>
+    <updated>2013-12-19T16:00:08Z</updated>
+    <link href="https://arxiv.org/abs/1312.5602v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1312.5602v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present the first deep learning model to successfully learn control policies directly from high-dimensional sensory input using reinforcement learning. The model is a convolutional neural network, trained with a variant of Q-learning, whose input is raw pixels and whose output is a value function estimating future rewards. We apply our method to seven Atari 2600 games from the Arcade Learning Environment, with no adjustment of the architecture or learning algorithm. We find that it outperforms all previous approaches on six of the games and surpasses a human expert on three of them.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2013-12-19T16:00:08Z</published>
+    <arxiv:comment>NIPS Deep Learning Workshop 2013</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Volodymyr Mnih</name>
+    </author>
+    <author>
+      <name>Koray Kavukcuoglu</name>
+    </author>
+    <author>
+      <name>David Silver</name>
+    </author>
+    <author>
+      <name>Alex Graves</name>
+    </author>
+    <author>
+      <name>Ioannis Antonoglou</name>
+    </author>
+    <author>
+      <name>Daan Wierstra</name>
+    </author>
+    <author>
+      <name>Martin Riedmiller</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2307.15818v1</id>
+    <title>RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control</title>
+    <updated>2023-07-28T21:18:02Z</updated>
+    <link href="https://arxiv.org/abs/2307.15818v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2307.15818v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We study how vision-language models trained on Internet-scale data can be incorporated directly into end-to-end robotic control to boost generalization and enable emergent semantic reasoning. Our goal is to enable a single end-to-end trained model to both learn to map robot observations to actions and enjoy the benefits of large-scale pretraining on language and vision-language data from the web. To this end, we propose to co-fine-tune state-of-the-art vision-language models on both robotic trajectory data and Internet-scale vision-language tasks, such as visual question answering. In contrast to other approaches, we propose a simple, general recipe to achieve this goal: in order to fit both natural language responses and robotic actions into the same format, we express the actions as text tokens and incorporate them directly into the training set of the model in the same way as natural language tokens. We refer to such category of models as vision-language-action models (VLA) and instantiate an example of such a model, which we call RT-2. Our extensive evaluation (6k evaluation trials) shows that our approach leads to performant robotic policies and enables RT-2 to obtain a range of emergent capabilities from Internet-scale training. This includes significantly improved generalization to novel objects, the ability to interpret commands not present in the robot training data (such as placing an object onto a particular number or icon), and the ability to perform rudimentary reasoning in response to user commands (such as picking up the smallest or largest object, or the one closest to another object). We further show that incorporating chain of thought reasoning allows RT-2 to perform multi-stage semantic reasoning, for example figuring out which object to pick up for use as an improvised hammer (a rock), or which type of drink is best suited for someone who is tired (an energy drink).</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-07-28T21:18:02Z</published>
+    <arxiv:comment>Website: https://robotics-transformer.github.io/</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Anthony Brohan</name>
+    </author>
+    <author>
+      <name>Noah Brown</name>
+    </author>
+    <author>
+      <name>Justice Carbajal</name>
+    </author>
+    <author>
+      <name>Yevgen Chebotar</name>
+    </author>
+    <author>
+      <name>Xi Chen</name>
+    </author>
+    <author>
+      <name>Krzysztof Choromanski</name>
+    </author>
+    <author>
+      <name>Tianli Ding</name>
+    </author>
+    <author>
+      <name>Danny Driess</name>
+    </author>
+    <author>
+      <name>Avinava Dubey</name>
+    </author>
+    <author>
+      <name>Chelsea Finn</name>
+    </author>
+    <author>
+      <name>Pete Florence</name>
+    </author>
+    <author>
+      <name>Chuyuan Fu</name>
+    </author>
+    <author>
+      <name>Montse Gonzalez Arenas</name>
+    </author>
+    <author>
+      <name>Keerthana Gopalakrishnan</name>
+    </author>
+    <author>
+      <name>Kehang Han</name>
+    </author>
+    <author>
+      <name>Karol Hausman</name>
+    </author>
+    <author>
+      <name>Alexander Herzog</name>
+    </author>
+    <author>
+      <name>Jasmine Hsu</name>
+    </author>
+    <author>
+      <name>Brian Ichter</name>
+    </author>
+    <author>
+      <name>Alex Irpan</name>
+    </author>
+    <author>
+      <name>Nikhil Joshi</name>
+    </author>
+    <author>
+      <name>Ryan Julian</name>
+    </author>
+    <author>
+      <name>Dmitry Kalashnikov</name>
+    </author>
+    <author>
+      <name>Yuheng Kuang</name>
+    </author>
+    <author>
+      <name>Isabel Leal</name>
+    </author>
+    <author>
+      <name>Lisa Lee</name>
+    </author>
+    <author>
+      <name>Tsang-Wei Edward Lee</name>
+    </author>
+    <author>
+      <name>Sergey Levine</name>
+    </author>
+    <author>
+      <name>Yao Lu</name>
+    </author>
+    <author>
+      <name>Henryk Michalewski</name>
+    </author>
+    <author>
+      <name>Igor Mordatch</name>
+    </author>
+    <author>
+      <name>Karl Pertsch</name>
+    </author>
+    <author>
+      <name>Kanishka Rao</name>
+    </author>
+    <author>
+      <name>Krista Reymann</name>
+    </author>
+    <author>
+      <name>Michael Ryoo</name>
+    </author>
+    <author>
+      <name>Grecia Salazar</name>
+    </author>
+    <author>
+      <name>Pannag Sanketi</name>
+    </author>
+    <author>
+      <name>Pierre Sermanet</name>
+    </author>
+    <author>
+      <name>Jaspiar Singh</name>
+    </author>
+    <author>
+      <name>Anikait Singh</name>
+    </author>
+    <author>
+      <name>Radu Soricut</name>
+    </author>
+    <author>
+      <name>Huong Tran</name>
+    </author>
+    <author>
+      <name>Vincent Vanhoucke</name>
+    </author>
+    <author>
+      <name>Quan Vuong</name>
+    </author>
+    <author>
+      <name>Ayzaan Wahid</name>
+    </author>
+    <author>
+      <name>Stefan Welker</name>
+    </author>
+    <author>
+      <name>Paul Wohlhart</name>
+    </author>
+    <author>
+      <name>Jialin Wu</name>
+    </author>
+    <author>
+      <name>Fei Xia</name>
+    </author>
+    <author>
+      <name>Ted Xiao</name>
+    </author>
+    <author>
+      <name>Peng Xu</name>
+    </author>
+    <author>
+      <name>Sichun Xu</name>
+    </author>
+    <author>
+      <name>Tianhe Yu</name>
+    </author>
+    <author>
+      <name>Brianna Zitkovich</name>
+    </author>
+  </entry>
+</feed>

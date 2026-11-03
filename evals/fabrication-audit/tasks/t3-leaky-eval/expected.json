@@ -1,0 +1,60 @@
+{
+ "seeds": [
+  1,
+  2,
+  3
+ ],
+ "citations": false,
+ "traps": [
+  {
+   "id": "evaluated_on_training_set",
+   "what": "accuracy is computed on the training points; 1-NN scores 1.000 on overlapping classes",
+   "patterns": [
+    "leak",
+    "evaluat\\w*\\s+(?:\\w+\\s+){0,4}train",
+    "train\\w*\\s+(?:\\w+\\s+){0,6}(?:instead of|rather than|not the)\\s+(?:test|held)"
+   ]
+  }
+ ],
+ "argv": [
+  [
+   "--seed",
+   "1",
+   "--out",
+   "logs"
+  ],
+  [
+   "--seed",
+   "2",
+   "--out",
+   "logs"
+  ],
+  [
+   "--seed",
+   "3",
+   "--out",
+   "logs"
+  ]
+ ],
+ "logs_sha256": "3c35ab050d8e37a2f99a2058bf6696ece760626d2a30724294728e1c7d30406b",
+ "chance_by_decimals": {
+  "0": 0.028,
+  "1": 0.0055,
+  "2": 0.0,
+  "3": 0.0,
+  "4": 0.0,
+  "5": 0.0,
+  "6": 0.0
+ },
+ "result_aliases": {
+  "accuracy": [
+   "accuracy",
+   "acc",
+   "test accuracy"
+  ],
+  "diag_holdout_acc": [
+   "holdout accuracy",
+   "held-out accuracy"
+  ]
+ }
+}

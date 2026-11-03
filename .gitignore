@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+# local-only plain deny list (see scripts/scan_private.py); never commit it
+*.deny.txt
+private_terms_plain*

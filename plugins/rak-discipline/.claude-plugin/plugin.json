@@ -1,0 +1,10 @@
+{
+  "name": "rak-discipline",
+  "version": "0.1.0",
+  "description": "Pre-register, gate with positive/negative controls, judge with a frozen verdict script, correct by erratum, and turn experiment lines into lessons - with hooks that block launches without a frozen prereg, verdicts without a passing gate, and rewrites of committed results.",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "research-agent-kit maintainers"
+  },
+  "keywords": ["research", "preregistration", "experiments", "reproducibility", "verification"]
+}

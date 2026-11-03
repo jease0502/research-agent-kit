@@ -1,0 +1,36 @@
+# Copy to digest.toml at the knowledge-base root and edit. Unknown keys are an error.
+
+categories = ["cs.RO", "cs.LG", "cs.CV", "cs.AI"]
+topics = [
+  "vision-language-action models and robot foundation models",
+  "legged and humanoid locomotion",
+  "manipulation and grasping, dexterous hands",
+  "sim-to-real transfer",
+  "RL training technique: exploration, entropy, bounded action spaces, curricula, reward design",
+  "robot data engines and synthetic data",
+]
+daily_limit = 30
+earliest = "09:30"          # runs triggered earlier (e.g. at logon) do nothing
+digest_dir = "docs/digest"
+tmp_dir = ".rak/tmp"        # add it to .gitignore
+notify_cmd = ""             # e.g. "python ~/.config/claude-tg/tg.py send"; the message is appended
+push = false                # true lets the scheduled run push; off by default
+
+# Your research lines and what is currently stuck. The digest ranks papers by these,
+# and puts papers that directly answer an open problem at the top.
+[[lines]]
+name = "quadruped locomotion from scratch"
+open_problems = [
+  "exp(-err^2/sigma) tracking rewards give almost no gradient while a new skill is far from learned",
+  "clipping actions to joint limits makes the policy's entropy run away",
+]
+
+[[lines]]
+name = "residual RL on top of an IK reference for grasping"
+open_problems = ["generalization across object size and yaw", "smoothness on hardware"]
+
+# Optional: conference seasons to track (arXiv comment field), at most once a week each.
+[[conferences]]
+name = "IROS 2026"
+season_start = "2026-06-15"
+season_end = "2026-10-31"

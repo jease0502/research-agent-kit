@@ -1,0 +1,3 @@
+site_name = "kb"
+source_url = "https://example.org/kb"
+locale = "zh-TW"

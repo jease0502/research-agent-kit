@@ -1,0 +1,47 @@
+{
+ "schema": 1,
+ "id": "kimi",
+ "vendor": "Moonshot AI (Kimi), international platform",
+ "tested_by_us": false,
+ "status_note": "Not tested by us. Everything here is copied from the vendor's pages on the dates given; run `python -m rak.models control kimi` before relying on it.",
+ "endpoint": "https://api.moonshot.ai/anthropic",
+ "auth": "key",
+ "key_env": "RAK_KEY_KIMI",
+ "key_target": "ANTHROPIC_AUTH_TOKEN",
+ "models": {
+  "main": "kimi-k3[1m]",
+  "opus": "kimi-k3[1m]",
+  "sonnet": "kimi-k3[1m]",
+  "haiku": "kimi-k2.7-code",
+  "subagent": "kimi-k3[1m]"
+ },
+ "env": {
+  "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1",
+  "ENABLE_TOOL_SEARCH": "false",
+  "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+ },
+ "claude_code": {
+  "min": "2.1.295",
+  "pin": "2.1.316",
+  "why": "min: the kit's hooks need onFailure: block (2.1.295+). pin: the version the kit was last developed against (2026-11-01); not tested with this endpoint by us."
+ },
+ "limits": [
+  {"text": "kimi-k2.7-code forces thinking on; with thinking off requests fail with \"400 invalid thinking: only type=enabled is allowed for this model\"", "source": "https://platform.kimi.ai/docs/guide/claude-code-kimi"},
+  {"text": "\"Configuring only some of the variables makes the corresponding scenarios fail silently\": every model variable must be set", "source": "https://platform.kimi.ai/docs/guide/claude-code-kimi"},
+  {"text": "the guide's curl check uses kimi-k3.1-pro while its configuration uses kimi-k3[1m]; the difference is not explained", "source": "https://platform.kimi.ai/docs/guide/claude-code-kimi"},
+  {"text": "the vendor also sets CLAUDE_CODE_AUTO_COMPACT_WINDOW=1000000 and CLAUDE_CODE_EFFORT_LEVEL=max; not applied by this profile", "source": "https://platform.kimi.ai/docs/guide/claude-code-kimi"},
+  {"text": "Anthropic does not support routing Claude Code to non-Claude models; treat every Claude Code upgrade as untested until the positive control passes", "source": "https://code.claude.com/docs/en/llm-gateway"}
+ ],
+ "data_policy": {
+  "where": "servers in Singapore",
+  "training": "by default; opt-out only via \"enterprise arrangements\"",
+  "retention": "while the account is active",
+  "source": "https://platform.kimi.ai/docs/agreement/userprivacy.md",
+  "read_on": "2026-10-31",
+  "verified": "primary"
+ },
+ "sources": [
+  {"url": "https://platform.kimi.ai/docs/guide/claude-code-kimi", "read_on": "2026-11-01", "what": "endpoint, variables, model names"},
+  {"url": "https://platform.kimi.ai/docs/agreement/modeluse", "read_on": "2026-10-31", "what": "terms"}
+ ]
+}

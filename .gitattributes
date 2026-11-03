@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.woff2 binary
+*.png binary
+# recorded API responses are evidence: keep their bytes exactly as recorded
+python/tests/fixtures/citation/responses/*.bin binary

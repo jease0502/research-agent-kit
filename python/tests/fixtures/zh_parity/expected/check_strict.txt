@@ -1,0 +1,64 @@
+
+✗ error (31)
+  papers/Bad_Slug.md: 檔名 `Bad_Slug` 不是合法 slug（小寫字母、數字、連字號）
+  papers/zz-bad-yaml.md: YAML 解析失敗：while parsing a flow sequence
+  in "<unicode string>", line 1, column 8:
+    title: [unclosed
+           ^
+expected ',' or ']', but got '<stream end>'
+  in "<unicode string>", line 1, column 17:
+    title: [unclosed
+                    ^
+  papers/zz-no-frontmatter.md: 沒有 frontmatter（檔案開頭必須是 `---`）
+  concepts/zz-cycle-a.md: alias `ppo` 同時被 `proximal-policy-optimization` 與 `zz-cycle-a` 使用
+  papers/zz-broken-fields.md: `concepts` 的 `Not_A_Slug` 不是合法 slug（小寫、數字、連字號）
+  papers/zz-broken-fields.md: 必填欄位 `summary` 是空的
+  papers/zz-broken-fields.md: venue `CoRL None` 含有 None／null —— 年份查不到就只留會議名或整個省略，不要格式化缺值
+  papers/zz-broken-fields.md: year `1800` 超出合理範圍
+  papers/zz-broken-fields.md: rating 必須是 1–5，實際是 9
+  papers/zz-broken-fields.md: 缺少章節 `## 延伸閱讀`
+  papers/zz-broken-fields.md: 缺少章節 `## 原文摘要`
+  papers/zz-broken-fields.md: 章節 `## TL;DR` 重複
+  concepts/zz-cycle-a.md: `type` 必須是 concept|algorithm|architecture|benchmark|dataset|metric|hardware|problem 之一，實際是 `method`
+  concepts/zz-cycle-a.md: 概念卡不應該有 `papers` 欄位；反向連結由 build.py 計算
+  papers/zz-missing.md: 缺少必填欄位 `authors`
+  papers/zz-missing.md: 缺少必填欄位 `year`
+  papers/zz-missing.md: 缺少必填欄位 `url`
+  papers/zz-missing.md: 缺少必填欄位 `tags`
+  papers/zz-missing.md: `status` 必須是 queued|reading|read|archived 之一，實際是 `bogus`
+  papers/zz-missing.md: 缺少必填欄位 `summary`
+  papers/zz-missing.md: 缺少必填欄位 `added`
+  papers/zz-missing.md: 缺少必填欄位 `updated`
+  papers/zz-missing.md: 缺少章節 `## TL;DR`
+  papers/zz-missing.md: 缺少章節 `## 問題與動機`
+  papers/zz-missing.md: 缺少章節 `## 方法`
+  papers/zz-missing.md: 缺少章節 `## 實驗與結果`
+  papers/zz-missing.md: 缺少章節 `## 我的評論`
+  papers/zz-missing.md: 缺少章節 `## 關鍵知識點`
+  papers/zz-missing.md: 缺少章節 `## 延伸閱讀`
+  papers/zz-missing.md: 缺少章節 `## 原文摘要`
+  concepts/zz-cycle-a.md: parents 形成循環：zz-cycle-a → zz-cycle-b → zz-cycle-a
+
+! warning (18)
+  papers/good-paper.md: 連到自己：`good-paper`（內文 [[…]]）
+  papers/zz-broken-fields.md: 未知欄位 `weird_field`（schema.py 沒有定義）
+  papers/zz-broken-fields.md: `code: null` — 空的可選欄位請整個省略
+  papers/zz-broken-fields.md: tags 有 6 個，建議 ≤5
+  papers/zz-broken-fields.md: tag `made-up-tag` 不在 docs/vocabulary.md — 先確認不是既有 tag 的同義詞
+  papers/zz-broken-fields.md: tag `x1` 不在 docs/vocabulary.md — 先確認不是既有 tag 的同義詞
+  papers/zz-broken-fields.md: tag `x2` 不在 docs/vocabulary.md — 先確認不是既有 tag 的同義詞
+  papers/zz-broken-fields.md: tag `x3` 不在 docs/vocabulary.md — 先確認不是既有 tag 的同義詞
+  papers/zz-broken-fields.md: tag `x4` 不在 docs/vocabulary.md — 先確認不是既有 tag 的同義詞
+  papers/zz-broken-fields.md: arxiv `2301.00001v2` 帶版本號，應去掉
+  papers/zz-broken-fields.md: `url` 看起來不是網址：'not-a-url'
+  papers/zz-broken-fields.md: updated 早於 added
+  papers/zz-broken-fields.md: 非標準章節 `## 自創章節`（schema.SECTIONS 沒有定義）
+  papers/zz-broken-fields.md: 必填章節順序與 schema 不一致
+  papers/zz-broken-fields.md: status 是 read 但還有 8 個 `> TODO` 章節
+  concepts/zz-cycle-a.md: 未知欄位 `papers`（schema.py 沒有定義）
+  concepts/zz-cycle-a.md: 連到自己：`zz-cycle-a`（內文 [[…]]）
+  concepts/zz-cycle-b.md: 必填章節順序與 schema 不一致
+
+6 個檔案 ｜ 31 error · 18 warning · 4 note
+
+exit 1

@@ -1,0 +1,15 @@
+{
+  "name": "rak-team",
+  "version": "0.0.1",
+  "description": "Lead/worker coordination for several Claude Code sessions: dispatch, report-to-lead-before-writing, path-scoped commits, handoff files, and notifications (official Channels first, a Telegram bridge as fallback).",
+  "license": "Apache-2.0",
+  "keywords": [
+    "multi-agent",
+    "coordination",
+    "handoff",
+    "notifications"
+  ],
+  "author": {
+    "name": "research-agent-kit maintainers"
+  }
+}

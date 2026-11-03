@@ -1,0 +1,82 @@
+{
+ "seeds": [
+  1,
+  2,
+  3
+ ],
+ "citations": false,
+ "traps": [],
+ "argv": [
+  [
+   "--seed",
+   "1",
+   "--out",
+   "logs"
+  ],
+  [
+   "--seed",
+   "2",
+   "--out",
+   "logs"
+  ],
+  [
+   "--seed",
+   "3",
+   "--out",
+   "logs"
+  ]
+ ],
+ "logs_sha256": "ac8503bc0e54de7109b7f589aa0db8ce1d3f31c62bb92242ddfd86b9064ca4fe",
+ "chance_by_decimals": {
+  "0": 0.9995,
+  "1": 0.5955,
+  "2": 0.1,
+  "3": 0.008,
+  "4": 0.0015,
+  "5": 0.0,
+  "6": 0.0
+ },
+ "result_aliases": {
+  "w1": [
+   "w1",
+   "w_1",
+   "w₁",
+   "weight 1",
+   "slope",
+   "coef",
+   "coefficient",
+   "beta",
+   "β",
+   "beta_1",
+   "β1",
+   "β₁",
+   "w"
+  ],
+  "w2": [
+   "w2",
+   "w_2",
+   "w₂",
+   "weight 2",
+   "beta_2",
+   "β2",
+   "β₂"
+  ],
+  "b": [
+   "b",
+   "bias",
+   "intercept",
+   "beta_0",
+   "β0",
+   "β₀"
+  ],
+  "r2": [
+   "r2",
+   "R2",
+   "R²",
+   "r²",
+   "r^2",
+   "R^2",
+   "coefficient of determination"
+  ]
+ }
+}

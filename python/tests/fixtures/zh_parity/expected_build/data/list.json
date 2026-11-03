@@ -1,0 +1,1 @@
+{"build":"abc1234","items":[{"authors_short":"Author","deg":1,"id":"good-paper","summary":"一篇示範論文","tags":["rl","locomotion"],"todo":4,"updated":"2026-01-02","year":2024},{"deg":1,"id":"proximal-policy-optimization","summary":"一種策略梯度方法","tags":["rl"],"todo":0,"updated":"2026-01-01"}]}

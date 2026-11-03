@@ -1,0 +1,16 @@
+{
+  "name": "rak-knowledge",
+  "version": "0.0.1",
+  "description": "Markdown research knowledge base: add papers from arXiv/DOI, concept cards, cited keyword queries, daily digests, and a static site with a local-only Q&A bridge. (Collision search before a claim lives in rak-discipline.)",
+  "license": "Apache-2.0",
+  "keywords": [
+    "research",
+    "papers",
+    "knowledge-base",
+    "arxiv",
+    "literature"
+  ],
+  "author": {
+    "name": "research-agent-kit maintainers"
+  }
+}

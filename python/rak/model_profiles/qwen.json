@@ -1,0 +1,47 @@
+{
+ "schema": 1,
+ "id": "qwen",
+ "vendor": "Alibaba Cloud Model Studio (Qwen), pay-as-you-go, Singapore region",
+ "tested_by_us": false,
+ "status_note": "Not tested by us. Everything here is copied from the vendor's pages on the dates given; run `python -m rak.models control qwen` before relying on it.",
+ "endpoint": "https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com/apps/anthropic",
+ "endpoint_vars": {"WorkspaceId": "RAK_QWEN_WORKSPACE_ID"},
+ "auth": "key",
+ "key_env": "RAK_KEY_QWEN",
+ "key_target": "ANTHROPIC_AUTH_TOKEN",
+ "models": {
+  "main": "qwen3.7-max",
+  "opus": "qwen3.7-max",
+  "sonnet": "qwen3.7-max",
+  "haiku": "qwen3.6-flash",
+  "subagent": "qwen3.7-max"
+ },
+ "env": {
+  "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1",
+  "ENABLE_TOOL_SEARCH": "false",
+  "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+ },
+ "claude_code": {
+  "min": "2.1.295",
+  "pin": "2.1.316",
+  "why": "min: the kit's hooks need onFailure: block (2.1.295+). pin: the version the kit was last developed against (2026-11-01); not tested with this endpoint by us."
+ },
+ "limits": [
+  {"text": "the key must match the base URL and region, otherwise 401 invalid_api_key; the base URL ends in /apps/anthropic with no /v1", "source": "https://www.alibabacloud.com/help/en/model-studio/claude-code"},
+  {"text": "without hasCompletedOnboarding: true in ~/.claude.json, Claude Code tries to reach api.anthropic.com", "source": "https://www.alibabacloud.com/help/en/model-studio/claude-code"},
+  {"text": "models marked \"Upcoming deprecation\" return 403 AccessDenied while still listed; there is no model-list endpoint", "source": "https://www.alibabacloud.com/help/en/model-studio/claude-code"},
+  {"text": "Token Plan and Coding Plan use other hosts and other model names (Token Plan: qwen3.8-max, qwen3.8-flash, qwen3.6-flash; Coding Plan: qwen3.7-plus); the FAQ lists further hosts without explaining the difference", "source": "https://www.alibabacloud.com/help/en/model-studio/claude-code"},
+  {"text": "Anthropic does not support routing Claude Code to non-Claude models; treat every Claude Code upgrade as untested until the positive control passes", "source": "https://code.claude.com/docs/en/llm-gateway"}
+ ],
+ "data_policy": {
+  "where": "international regions: Singapore, US, Frankfurt, Hong Kong, Tokyo",
+  "training": "not without separate consent",
+  "retention": "\"no longer than 30 days\"; zero retention on approval",
+  "source": "https://www.alibabacloud.com/help/en/model-studio/data-retention-policy",
+  "read_on": "2026-10-31",
+  "verified": "primary"
+ },
+ "sources": [
+  {"url": "https://www.alibabacloud.com/help/en/model-studio/claude-code", "read_on": "2026-11-01", "what": "endpoints, variables, model names"}
+ ]
+}

@@ -1,0 +1,38 @@
+{
+ "schema": 1,
+ "id": "anthropic",
+ "vendor": "Anthropic",
+ "tested_by_us": false,
+ "status_note": "First-party endpoint. The positive control has not been run by us with this profile yet.",
+ "endpoint": null,
+ "auth": "claude_login_or_key",
+ "key_env": "RAK_KEY_ANTHROPIC",
+ "key_target": "ANTHROPIC_API_KEY",
+ "models": {
+  "main": "claude-opus-5-5",
+  "opus": "claude-opus-5-5",
+  "sonnet": "claude-sonnet-5-5",
+  "haiku": "claude-haiku-5-5",
+  "subagent": "claude-sonnet-5-5"
+ },
+ "env": {},
+ "claude_code": {
+  "min": "2.1.295",
+  "pin": "2.1.316",
+  "why": "min: the kit's hooks need onFailure: block (2.1.295+). pin: the version the kit was last developed against (2026-11-01)."
+ },
+ "limits": [
+  {"text": "none of the compatibility switches is needed; WebSearch is a server-side tool available on Anthropic's API", "source": "https://code.claude.com/docs/en/tools-reference"}
+ ],
+ "data_policy": {
+  "where": "not re-checked for this profile",
+  "training": "commercial products (API key, Team/Enterprise): \"By default, we will not use your inputs or outputs from our commercial products\" to train models; feedback you send may be used. Consumer plans (Pro/Max login) follow the account's own setting, not re-checked here",
+  "retention": "feedback up to 5 years; other retention not re-checked",
+  "source": "https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training",
+  "read_on": "2026-11-01",
+  "verified": "primary"
+ },
+ "sources": [
+  {"url": "https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training", "read_on": "2026-11-01", "what": "training default"}
+ ]
+}

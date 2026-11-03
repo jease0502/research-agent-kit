@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "rak": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-m", "rak.mcp_server", "--root", "/ABSOLUTE/PATH/TO/PROJECT",
+               "--exec-allow", "git", "--exec-allow", "python",
+               "--audit-log", "/ABSOLUTE/PATH/OUTSIDE/PROJECT/rak-mcp-audit.jsonl"],
+      "env": {"PYTHONPATH": "/ABSOLUTE/PATH/TO/research-agent-kit/python"}
+    }
+  }
+}

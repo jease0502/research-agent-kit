@@ -1,0 +1,25 @@
+#!/bin/sh
+# Block a commit whose staged content contains a private name, account, local path or token.
+# Install once per clone:  git config core.hooksPath scripts/hooks   (see CONTRIBUTING.md, "Private material")
+# Python: $RAK_PYTHON if set, else python, else python3.
+#
+# Only the staged blobs block: they are what this commit contains. The rest of the working tree is scanned too,
+# but a hit there only warns. The working tree is shared by several sessions, and another session's untracked or
+# unstaged file must not stop yours (maintainer, 2026-11-01). CI still scans the whole tree and the history.
+root=$(git rev-parse --show-toplevel) || exit 1
+py=${RAK_PYTHON:-python}
+command -v "$py" >/dev/null 2>&1 || py=python3
+scan="$root/scripts/scan_private.py"
+
+if ! "$py" "$scan" --root "$root" --staged; then
+    echo "pre-commit: the staged content has a finding (above). Change the text; do not allow-list it." >&2
+    exit 1
+fi
+hits=$("$py" "$scan" --root "$root" 2>/dev/null)
+if [ -n "$hits" ]; then
+    printf '%s\n' "$hits" >&2
+    n=$(printf '%s\n' "$hits" | grep -c .)
+    echo "pre-commit: warning: the working tree has $n finding(s), not in this commit (above). Not blocking;" \
+         "CI scans the whole tree, so whoever owns those files has to fix them." >&2
+fi
+exit 0

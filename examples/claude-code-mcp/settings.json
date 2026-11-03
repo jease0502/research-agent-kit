@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "deny": ["Bash", "PowerShell", "Monitor", "Read", "Edit", "MultiEdit", "Write", "NotebookEdit", "Glob", "Grep",
+             "WebFetch", "WebSearch"],
+    "allow": ["mcp__rak__exec", "mcp__rak__read", "mcp__rak__edit", "mcp__rak__write"]
+  }
+}

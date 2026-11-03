@@ -1,0 +1,23 @@
+{
+  "account": "<ACCOUNT_EMAIL>",
+  "project": "<gcp-project-id>",
+  "bucket": "gs://<bucket>/<prefix>",
+  "image": {"project": "<image-project>", "family": "<image-family>"},
+  "zones": ["<zone-1>", "<zone-2>"],
+  "machine_type": "g2-standard-8",
+  "disk_gb": 300,
+  "disk_type": "pd-balanced",
+  "provisioning": "STANDARD",
+  "max_run": "8h",
+  "idle_minutes": 20,
+  "service_account": "<SERVICE_ACCOUNT_EMAIL>",
+  "price_per_vm_hour": 1.0,
+  "report_at_usd": 8,
+  "stop_at_usd": 12,
+  "labels": {"owner": "<who>", "project": "<what>"},
+  "name_prefix": "rak-",
+  "poll_s": 120,
+  "stall_min": 30,
+  "stop_wait_min": 25,
+  "local_dir": "<local folder for pulled outputs>"
+}

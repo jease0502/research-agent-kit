@@ -1,0 +1,32 @@
+{
+  "name": "research-agent-kit",
+  "owner": {
+    "name": "jease0502"
+  },
+  "metadata": {
+    "description": "A research agent kit for Claude Code that pre-registers, gates on controls, and only then believes results.",
+    "version": "0.0.1"
+  },
+  "plugins": [
+    {
+      "name": "rak-knowledge",
+      "source": "./plugins/rak-knowledge",
+      "description": "Markdown research knowledge base: add papers from arXiv/DOI, concept cards, cited keyword queries, daily digests, and a static site with a local-only Q&A bridge. (Collision search before a claim lives in rak-discipline.)"
+    },
+    {
+      "name": "rak-discipline",
+      "source": "./plugins/rak-discipline",
+      "description": "Pre-register, gate with positive/negative controls, judge with a frozen verdict script, correct by erratum, and turn experiment lines into lessons - with hooks that block launches without a frozen prereg, verdicts without a passing gate, and rewrites of committed results."
+    },
+    {
+      "name": "rak-cloud",
+      "source": "./plugins/rak-cloud",
+      "description": "Cloud GPU job lifecycle with spending kept outside the agent: pre-create checks, VM-side job state machine, an external waiter that only treats 'not found' as gone, verify-every-file-before-delete, idle self-delete, max-run, a cost ledger, and a local GPU lock."
+    },
+    {
+      "name": "rak-team",
+      "source": "./plugins/rak-team",
+      "description": "Lead/worker coordination for several Claude Code sessions: dispatch, report-to-lead-before-writing, path-scoped commits, handoff files, and notifications (official Channels first, a Telegram bridge as fallback)."
+    }
+  ]
+}

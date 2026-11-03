@@ -1,0 +1,26 @@
+{
+ "https://api.crossref.org/works/10.1038/nature14236": {
+  "file": "3eae46e40fc6556e.bin",
+  "status": 200
+ },
+ "https://api.crossref.org/works/10.9999/rak-does-not-exist-2026": {
+  "file": "28d73989a9e7918f.bin",
+  "status": 404
+ },
+ "https://api.openalex.org/works/doi:10.9999/rak-does-not-exist-2026": {
+  "file": "122527ca70cf1f6b.bin",
+  "status": 404
+ },
+ "https://api.openalex.org/works?search=attention+is+all+you+need&per-page=5": {
+  "file": "6d9d276cd52adc75.bin",
+  "status": 200
+ },
+ "https://api.openalex.org/works?search=quantum+tensor+lattices+for+self+folding+origami+robots+in+zero+gravity+kitchens&per-page=5": {
+  "file": "8399fc412a5c9f2b.bin",
+  "status": 200
+ },
+ "https://export.arxiv.org/api/query?id_list=1312.5602,1707.06347,1810.04805,2307.15818,2399.99999&max_results=5": {
+  "file": "2c0776c88e024b26.bin",
+  "status": 200
+ }
+}

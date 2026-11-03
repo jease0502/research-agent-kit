@@ -1,0 +1,16 @@
+{
+  "name": "rak-cloud",
+  "version": "0.0.1",
+  "description": "Cloud GPU job lifecycle with spending kept outside the agent: pre-create checks, VM-side job state machine, an external waiter that only treats 'not found' as gone, verify-every-file-before-delete, idle self-delete, max-run, a cost ledger, and a local GPU lock.",
+  "license": "Apache-2.0",
+  "keywords": [
+    "gcp",
+    "gpu",
+    "experiments",
+    "cost",
+    "cloud"
+  ],
+  "author": {
+    "name": "research-agent-kit maintainers"
+  }
+}

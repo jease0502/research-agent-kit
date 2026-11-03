@@ -1,0 +1,83 @@
+# L1 sandbox (docs/harness-landscape.md §4): the whole agent process, Claude Code and our MCP server, in a container.
+#
+#   /work         the project: a per-run volume (copy mode) or the folder itself (mount mode); run.sh adds it
+#   RAK_KIT       this kit's checkout (mounted read-only at /opt/rak: policy engine, plugins, MCP server)
+#   RAK_AUDIT     a folder outside the project for the MCP audit log; only the audit container mounts it
+#   RAK_EGRESS_ALLOW  hosts the proxy lets through (space separated; ".example.org" = any subdomain)
+#
+# Started by run.sh, which checks these are set. See README.md.
+name: rak-sandbox
+
+networks:
+  sandbox:
+    internal: true          # no route out: the only way to the internet is the proxy
+  egress: {}
+
+volumes:
+  audit-pipe: {}            # holds only the audit FIFO; read-only in the agent (audit_collector.py)
+
+services:
+  proxy:
+    image: rak-sandbox:${RAK_SANDBOX_TAG:-2.1.316}
+    user: "10001"
+    command: ["python3", "/opt/proxy/egress_proxy.py", "--port", "3128"]
+    environment:
+      RAK_EGRESS_ALLOW: ${RAK_EGRESS_ALLOW:?set RAK_EGRESS_ALLOW}
+    volumes:
+      - ./egress_proxy.py:/opt/proxy/egress_proxy.py:ro
+    networks: [sandbox, egress]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: "no"
+
+  audit:
+    image: rak-sandbox:${RAK_SANDBOX_TAG:-2.1.316}
+    user: "10002:10001"     # not the agent's uid; the agent's group may only write the FIFO
+    command: ["python3", "/opt/audit/audit_collector.py", "/pipe/rak-mcp-audit", "/audit/rak-mcp-audit.jsonl"]
+    volumes:
+      - ./audit_collector.py:/opt/audit/audit_collector.py:ro
+      - audit-pipe:/pipe
+      - ${RAK_AUDIT:?set RAK_AUDIT}:/audit
+    network_mode: none
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    healthcheck:            # the agent starts only once the FIFO exists (its folder is read-only to the agent)
+      test: ["CMD", "python3", "-c", "import os,stat,sys;sys.exit(not stat.S_ISFIFO(os.stat('/pipe/rak-mcp-audit').st_mode))"]
+      interval: 1s
+      retries: 30
+
+  agent:
+    image: rak-sandbox:${RAK_SANDBOX_TAG:-2.1.316}
+    depends_on:
+      proxy: {condition: service_started}
+      audit: {condition: service_healthy}
+    networks: [sandbox]
+    working_dir: /work
+    environment:
+      HTTPS_PROXY: http://proxy:3128
+      HTTP_PROXY: http://proxy:3128
+      NO_PROXY: ""
+      PYTHONPATH: /opt/rak/python
+      # Auth: exactly one of these, passed through from run.sh (never written into a file in a repository).
+      CLAUDE_CODE_OAUTH_TOKEN: ${CLAUDE_CODE_OAUTH_TOKEN:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      # Another vendor's endpoint (docs/model-profiles.md); empty means Anthropic's.
+      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-}
+    volumes:
+      - ${RAK_KIT:?set RAK_KIT}:/opt/rak:ro
+      - ./config:/opt/rak-config:ro
+      - audit-pipe:/pipe:ro
+    tmpfs:
+      - /tmp:size=256m
+      # A fresh, empty home on every run: nothing the agent writes there (e.g. a hook in ~/.claude/settings.json)
+      # survives into the next run (review of 6555c3c, H2)
+      - /home/runner:size=128m,uid=10001,gid=10001,mode=0700
+    read_only: true          # the image itself cannot be changed from inside
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 512
+    mem_limit: 4g
+    restart: "no"

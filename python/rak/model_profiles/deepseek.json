@@ -1,0 +1,48 @@
+{
+ "schema": 1,
+ "id": "deepseek",
+ "vendor": "DeepSeek",
+ "tested_by_us": false,
+ "status_note": "Not tested by us. Everything here is copied from the vendor's pages on the dates given; run `python -m rak.models control deepseek` before relying on it.",
+ "endpoint": "https://api.deepseek.com/anthropic",
+ "auth": "key",
+ "key_env": "RAK_KEY_DEEPSEEK",
+ "key_target": "ANTHROPIC_API_KEY",
+ "models": {
+  "main": "deepseek-v4-pro",
+  "opus": "deepseek-v4-pro",
+  "sonnet": "deepseek-flash",
+  "haiku": "deepseek-flash",
+  "subagent": "deepseek-v4-pro"
+ },
+ "env": {
+  "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1",
+  "ENABLE_TOOL_SEARCH": "false",
+  "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+ },
+ "claude_code": {
+  "min": "2.1.295",
+  "pin": "2.1.316",
+  "why": "min: the kit's hooks need onFailure: block (2.1.295+). pin: the version the kit was last developed against (2026-11-01); not tested with this endpoint by us."
+ },
+ "limits": [
+  {"text": "model names must start with claude or be a DeepSeek name: claude-opus* maps to deepseek-v4-pro, claude-sonnet* and claude-haiku* to deepseek-flash, other names return 400", "source": "https://api-docs.deepseek.com/guides/anthropic_api"},
+  {"text": "tool_choice any is treated as auto (does not force a tool call); tool_choice tool returns 400 in thinking mode; disable_parallel_tool_use is ignored", "source": "https://api-docs.deepseek.com/guides/anthropic_api"},
+  {"text": "tool_result is_error, cache_control and mcp_servers are ignored; document, search_result, mcp_tool_use and mcp_tool_result are not supported", "source": "https://api-docs.deepseek.com/guides/anthropic_api"},
+  {"text": "the anthropic-beta header is ignored for /messages; thinking budget_tokens is ignored; max_tokens is not a strict limit for some Claude Code thinking requests", "source": "https://api-docs.deepseek.com/guides/anthropic_api"},
+  {"text": "deepseek-flash returns 400 on images in assistant messages; deepseek-v4-pro replaces images with [Unsupported Image]", "source": "https://api-docs.deepseek.com/guides/anthropic_api"},
+  {"text": "subagents, WebSearch and WebFetch broke against DeepSeek in Claude Code issue #65863", "source": "https://github.com/anthropics/claude-code/issues/65863"},
+  {"text": "Anthropic does not support routing Claude Code to non-Claude models; treat every Claude Code upgrade as untested until the positive control passes", "source": "https://code.claude.com/docs/en/llm-gateway"}
+ ],
+ "data_policy": {
+  "where": "\"store your Personal Data in People's Republic of China\"",
+  "training": "may be used \"to train and improve\"; opt-out by email",
+  "retention": "\"as long as you have an account\"",
+  "source": "https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html",
+  "read_on": "2026-10-31",
+  "verified": "primary"
+ },
+ "sources": [
+  {"url": "https://api-docs.deepseek.com/guides/anthropic_api", "read_on": "2026-11-01", "what": "endpoint, model names, field support"}
+ ]
+}

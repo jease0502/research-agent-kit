@@ -1,0 +1,46 @@
+{
+ "schema": 1,
+ "id": "glm",
+ "vendor": "Zhipu Z.ai (GLM), international",
+ "tested_by_us": false,
+ "status_note": "Not tested by us. Everything here is copied from the vendor's pages on the dates given; run `python -m rak.models control glm` before relying on it.",
+ "endpoint": "https://api.z.ai/api/anthropic",
+ "auth": "key",
+ "key_env": "RAK_KEY_GLM",
+ "key_target": "ANTHROPIC_AUTH_TOKEN",
+ "models": {
+  "main": "glm-5.3[1m]",
+  "opus": "glm-5.3[1m]",
+  "sonnet": "glm-5.3[1m]",
+  "haiku": "glm-5.3-flash[1m]",
+  "subagent": "glm-5.3[1m]"
+ },
+ "env": {
+  "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1",
+  "ENABLE_TOOL_SEARCH": "false",
+  "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+ },
+ "claude_code": {
+  "min": "2.1.295",
+  "pin": "2.1.316",
+  "vendor_verified": "2.0.14",
+  "why": "min: the kit's hooks need onFailure: block (2.1.295+). pin: the version the kit was last developed against (2026-11-01); not tested with this endpoint by us."
+ },
+ "limits": [
+  {"text": "\"We have verified compatibility with Claude Code 2.0.14 and other versions\": 2.0.14 is older than the kit's minimum (2.1.295), so the vendor-verified version cannot run our hooks fail-closed", "source": "https://docs.z.ai/devpack/tool/claude"},
+  {"text": "the page's default and manual configurations disagree on the model mapping (all GLM-5.3-Flash vs. glm-5.3 and glm-5.3-flash); this profile follows the manual one", "source": "https://docs.z.ai/devpack/tool/claude"},
+  {"text": "the vendor also sets API_TIMEOUT_MS=3000000 and CLAUDE_CODE_AUTO_COMPACT_WINDOW=1000000; not applied by this profile", "source": "https://docs.z.ai/devpack/tool/claude"},
+  {"text": "Anthropic does not support routing Claude Code to non-Claude models; treat every Claude Code upgrade as untested until the positive control passes", "source": "https://code.claude.com/docs/en/llm-gateway"}
+ ],
+ "data_policy": {
+  "where": "operator in Singapore (secondary source)",
+  "training": "\"will not use … unless you explicitly agree\", printed in brackets, so possibly a draft",
+  "retention": "not found (the data processing addendum page returned 404)",
+  "source": "https://docs.z.ai/legal-agreement/terms-of-use",
+  "read_on": "2026-10-31",
+  "verified": "primary, clause possibly a draft"
+ },
+ "sources": [
+  {"url": "https://docs.z.ai/devpack/tool/claude", "read_on": "2026-11-01", "what": "endpoint, variables, model names, verified version"}
+ ]
+}

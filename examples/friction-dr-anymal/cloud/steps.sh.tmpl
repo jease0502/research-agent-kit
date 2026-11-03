@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# VM steps for prereg friction-dr-anymal (rendered by prepare_job.py, which fills in the frozen commit below).
+# Run by rak-cloud's vm_job.sh: every step must leave fresh declared outputs, the exit code alone never counts.
+# Order follows prereg §9: fetch code -> install -> G1 preflight -> timing smoke -> budget rule -> train x10
+# -> evaluations x31 -> aggregate -> gate -> judge (only if the gate passed).
+EXPECTED_COMMIT=@@COMMIT@@
+CODE_URL=${RAK_OUT_URL%/out}/code
+# overridable only so the flow test can run this file with a fake Isaac; never set on a real VM
+EX_PY=${EX_PY:-/opt/rak/venv/bin/python}
+SYS_PY=${SYS_PY:-python3}
+EX_INSTALL=${EX_INSTALL:-install_isaac}
+export RAK_PREREG=friction-dr-anymal
+X=code/experiments/friction-dr-anymal
+H=--headless
+
+install_isaac() {   # Isaac Sim 5.1 + Isaac Lab v2.3.0 in their own venv (pin versions; read the defaults again after)
+  set -e
+  python3 -m venv /opt/rak/venv
+  /opt/rak/venv/bin/pip install -q "isaacsim[all,extscache]==5.1.0" --extra-index-url https://pypi.nvidia.com
+  git clone -q --depth 1 -b v2.3.0 https://github.com/isaac-sim/IsaacLab.git /opt/rak/IsaacLab
+  (cd /opt/rak/IsaacLab && PATH=/opt/rak/venv/bin:$PATH ./isaaclab.sh -i rsl_rl)
+  /opt/rak/venv/bin/pip freeze
+  git -C /opt/rak/IsaacLab rev-parse HEAD
+}
+export -f install_isaac
+
+policies() { local a s; for a in control treatment; do for s in 9101 9102 9103 9104 9105; do echo "$a-$s"; done; done; }
+
+run_steps() {
+  local t0 p
+  t0=$SECONDS
+  step FETCH 900 "code/COMMIT" -- \
+    "gcloud storage cp $CODE_URL/code.tgz code.tgz && gcloud storage cp $CODE_URL/code.sha256 code.sha256 \
+     && sha256sum -c code.sha256 && mkdir -p code && tar xzmf code.tgz -C code \
+     && [ \"\$(cat code/COMMIT)\" = $EXPECTED_COMMIT ] && [ -f code/.rak/frozen/friction-dr-anymal.json ]"
+  step INSTALL 5400 "versions.txt" -- "$EX_INSTALL > versions.txt"
+  # G1 before money is spent on training: the override must be what the engine uses
+  step PREFLIGHT_G1 1800 "preflight/materials_mu0.3.json" -- "$EX_PY $X/evaluate.py --materials-only --mu 0.3 --out preflight $H"
+  step SMOKE 2400 "runs/train/control-9100/timing.json" -- \
+    "$EX_PY $X/train.py --arm control --seed 9100 --smoke --out runs/train/control-9100 $H"
+  # prereg §6: projected total over the stop line -> stop here, before any main training
+  step BUDGET 120 "budget.json" -- \
+    "$SYS_PY $X/smoke_budget.py --smoke runs/train/control-9100 --setup-hours $(( (SECONDS - t0) / 36 ))e-2 --out budget.json"
+  for p in $(policies); do
+    step "TRAIN_${p//-/_}" 2700 "runs/train/$p/DONE runs/train/$p/run.json" -- \
+      "$EX_PY $X/train.py --arm ${p%-*} --seed ${p#*-} --out runs/train/$p $H"
+  done
+  for p in $(policies); do
+    step "EVAL_${p//-/_}_mu0.3" 1200 "runs/eval/${p}__mu0.3.json" -- "$EX_PY $X/evaluate.py --policy runs/train/$p --mu 0.3 --out runs/eval $H"
+    step "EVAL_${p//-/_}_mu0.8" 1200 "runs/eval/${p}__mu0.8.json" -- "$EX_PY $X/evaluate.py --policy runs/train/$p --mu 0.8 --out runs/eval $H"
+    if [ "${p%-*}" = control ]; then
+      step "EVAL_${p//-/_}_mu0.05" 1200 "runs/eval/${p}__mu0.05.json" -- "$EX_PY $X/evaluate.py --policy runs/train/$p --mu 0.05 --out runs/eval $H"
+      step "EVAL_${p//-/_}_default" 1200 "runs/eval/${p}__default.json" -- "$EX_PY $X/evaluate.py --policy runs/train/$p --default-path --out runs/eval $H"
+    fi
+  done
+  step EVAL_zero_default 1200 "runs/eval/zero__default.json" -- "$EX_PY $X/evaluate.py --zero-action --default-path --out runs/eval $H"
+  step AGGREGATE 600 "gate_evidence.json results.json" -- \
+    "$SYS_PY $X/aggregate.py --evals runs/eval --gate-out gate_evidence.json --results-out results.json"
+  # the verdict script runs from the code tree (it looks for .rak/frozen there); its exit code is the gate result
+  step GATE 300 "gate_status.txt gate_stdout.txt" -- \
+    "cd code && $SYS_PY experiments/friction-dr-anymal/verdict.py gate --evidence ../gate_evidence.json > ../gate_stdout.txt; \
+     echo \$? > ../gate_status.txt; mkdir -p ../gates && cp .rak/gates/*.json ../gates/"
+  # vm_job calls run_steps once first, only to list the outputs: no external commands there (`say` runs date), and no
+  # gate_status.txt yet, so that pass must reach JUDGE. In the real pass the GATE step has already proved the file fresh.
+  local gate=0
+  [ -e "$OUT/gate_status.txt" ] && read -r gate < "$OUT/gate_status.txt"
+  if [ "$gate" != 0 ]; then
+    say "GATE FAILED: results are not read (prereg §3). See gate_stdout.txt."
+    return 0
+  fi
+  step JUDGE 300 "verdict.json" -- \
+    "cd code && $SYS_PY experiments/friction-dr-anymal/verdict.py judge --results ../results.json --out ../verdict.json"
+}

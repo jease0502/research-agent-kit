@@ -1,0 +1,52 @@
+{
+  "create": {
+    "type": "Sequence", "name": "create", "children": [
+      {"type": "Action", "name": "precheck"},
+      {"type": "Retry", "name": "zones", "times": "$n_zones", "child":
+        {"type": "Action", "name": "create_in_next_zone"}}
+    ]
+  },
+  "wait": {
+    "type": "Sequence", "name": "wait", "children": [
+      {"type": "Action", "name": "observe"},
+      {"type": "Fallback", "name": "vm_known", "children": [
+        {"type": "Condition", "name": "vm_state_known"},
+        {"type": "Action", "name": "report_unknown"}
+      ]},
+      {"type": "Action", "name": "budget"},
+      {"type": "Fallback", "name": "outcome", "children": [
+        {"type": "Sequence", "name": "vm_gone", "children": [
+          {"type": "Condition", "name": "vm_is_gone"},
+          {"type": "Action", "name": "salvage_outputs"},
+          {"type": "Fallback", "name": "gone_outcome", "children": [
+            {"type": "Sequence", "name": "verified", "children": [
+              {"type": "Condition", "name": "outputs_verified"},
+              {"type": "Action", "name": "report_gone"}
+            ]},
+            {"type": "Action", "name": "report_gone_unverified"}
+          ]}
+        ]},
+        {"type": "Sequence", "name": "finished", "children": [
+          {"type": "Condition", "name": "job_ended_or_vm_stopped"},
+          {"type": "Action", "name": "pull_and_verify"},
+          {"type": "Fallback", "name": "delete_or_give_up", "children": [
+            {"type": "Sequence", "name": "deleted", "children": [
+              {"type": "Action", "name": "delete_vm"},
+              {"type": "Action", "name": "report_done"}
+            ]},
+            {"type": "Action", "name": "give_up_delete"}
+          ]}
+        ]},
+        {"type": "Sequence", "name": "stop_requested", "children": [
+          {"type": "Condition", "name": "stop_sent"},
+          {"type": "Fallback", "name": "stop_or_give_up", "children": [
+            {"type": "Timeout", "name": "stop_wait", "seconds": "$stop_wait_s", "since": "$stop_sent_at", "child":
+              {"type": "Action", "name": "await_stop"}},
+            {"type": "Action", "name": "give_up_stop"}
+          ]}
+        ]},
+        {"type": "Action", "name": "keep_waiting"}
+      ]}
+    ]
+  }
+}

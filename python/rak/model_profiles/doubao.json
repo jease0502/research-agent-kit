@@ -1,0 +1,46 @@
+{
+ "schema": 1,
+ "id": "doubao",
+ "vendor": "ByteDance Volcengine Ark Coding Plan (Doubao / Seed), Beijing region",
+ "tested_by_us": false,
+ "status_note": "Not tested by us. Everything here is copied from the vendor's pages on the dates given; run `python -m rak.models control doubao` before relying on it. Mainland-China platform: its terms were not checked.",
+ "endpoint": "https://ark.cn-beijing.volces.com/api/coding",
+ "auth": "key",
+ "key_env": "RAK_KEY_DOUBAO",
+ "key_target": "ANTHROPIC_AUTH_TOKEN",
+ "models": {
+  "main": "doubao-seed-2.1-pro",
+  "opus": "doubao-seed-2.1-pro",
+  "sonnet": "doubao-seed-2.1-pro",
+  "haiku": "doubao-seed-2.1-lite",
+  "subagent": "doubao-seed-2.1-pro"
+ },
+ "env": {
+  "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1",
+  "ENABLE_TOOL_SEARCH": "false",
+  "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+ },
+ "claude_code": {
+  "min": "2.1.295",
+  "pin": "2.1.316",
+  "why": "min: the kit's hooks need onFailure: block (2.1.295+). pin: the version the kit was last developed against (2026-11-01); not tested with this endpoint by us."
+ },
+ "limits": [
+  {"text": "the same endpoint also serves glm-5.3, deepseek-v4-* and kimi-k3 / kimi-k3.1-pro; a model name of Auto is not accepted (console only)", "source": "https://docs.volcengine.com/docs/82379/1928262"},
+  {"text": "do not use the /api/v3 base URL: it does not use Coding Plan quota and is billed extra", "source": "https://docs.volcengine.com/docs/82379/1928262"},
+  {"text": "telemetry goes to the base URL and uses quota unless CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC is set; CLAUDE_CODE_SUBAGENT_MODEL should match the main model", "source": "https://docs.volcengine.com/docs/82379/1928262"},
+  {"text": "Web Search needs a separate console service and makes extra model calls", "source": "https://docs.volcengine.com/docs/82379/1928262"},
+  {"text": "Anthropic does not support routing Claude Code to non-Claude models; treat every Claude Code upgrade as untested until the positive control passes", "source": "https://code.claude.com/docs/en/llm-gateway"}
+ ],
+ "data_policy": {
+  "where": "mainland China (Beijing region)",
+  "training": "not checked",
+  "retention": "not checked",
+  "source": null,
+  "read_on": "2026-10-31",
+  "verified": "not checked: mainland platform terms were out of scope. BytePlus (international) states no use without prior authorization (read through a search summary) but is a different endpoint"
+ },
+ "sources": [
+  {"url": "https://docs.volcengine.com/docs/82379/1928262", "read_on": "2026-11-01", "what": "endpoint, variables, model names"}
+ ]
+}

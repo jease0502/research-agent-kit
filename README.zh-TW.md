@@ -83,6 +83,48 @@ hook 和工具伺服器在 Claude Code 裡、在任何工具呼叫之前執行�
 `python/rak/model_profiles/` 有 Anthropic、DeepSeek、Kimi、Qwen、GLM、MiniMax、豆包的設定（Anthropic 相容端點，金鑰從你的環境變數讀），另附一個你自己跑的正對照。
 **我們只實測過 Anthropic。** 你跑了別家，歡迎把正對照的輸出開成 issue。
 
+## 跟其他系統的關係
+
+下面這些系統比 research-agent-kit 自動化更多研究流程，或是在最佳化 agent 本身。rak 兩件事都不做：
+它只在你已經在用的 agent 外面，加上用程式碼執行的規則。以下比較都不是量測結果：rak 自己的捏造稽核還沒跑。
+
+**AI Scientist v1 與 v2**（Sakana AI；[v1](https://arxiv.org/abs/2408.06292)、[v2](https://arxiv.org/abs/2504.08066)）。
+從 idea、實驗到論文的 pipeline，由自動 reviewer 評分；v2 用 agentic tree search 取代 v1 的程式碼範本。
+兩份 README（[v1](https://github.com/SakanaAI/AI-Scientist)、[v2](https://github.com/SakanaAI/AI-Scientist-v2)）
+都警告它們會執行 LLM 寫的程式碼，要你放進 sandbox。Sakana 自己回報 v1 碰到 timeout 時
+「tried to modify its own code to extend the timeout period」（[部落格](https://sakana.ai/ai-scientist/)），
+v2 則「occasionally made embarrassing citation errors」（[部落格](https://sakana.ai/ai-scientist-first-publication/)）。
+在 rak 裡，執行上限（max-run、閒置自刪）在 VM 上執行，不在 agent 會改的程式碼裡；論文 metadata 只來自 arXiv／DOI API。
+
+**The Agentic Scientist**（Sakana AI；[arXiv 2610.18933](https://arxiv.org/abs/2610.18933)，repo 名為
+[AI-Scientist-v3](https://github.com/SakanaAI/AI-Scientist-v3)）。驅動 Claude Code、Codex 等 coding agent，
+從一個 task 檔一路走過 idea、ablation、「a sealed final evaluation」（封存的最終評估）到論文。
+它有不少檢查寫在程式碼裡：每個 idea 執行前必須寫出「a falsifiable hypothesis」（可否證的假設）；
+寫作 agent「may only cite keys」，只能引用腳本從書目 API 取回的條目；另有 audit agent 拿論文的主張對照證據。
+它自動化的範圍遠大於 rak，rak 也沒有對應它封存最終評估的機制。rak 用程式碼強制的是：凍結的預登記、
+讀結果前必須通過的正負對照閘門、只能追加的結果。它的作者指出 rubric「check only the criteria they enumerate」
+（只檢查有列出來的條件），rak 的檢查也有同樣的限制。
+
+**Harness²**（Google Cloud AI Research 與 Northwestern University；
+[arXiv 2610.14224](https://arxiv.org/abs/2610.14224)、[程式碼](https://github.com/google-research/harness2)）。
+在同一個任務的多次執行之間，由另外的改進 session 修改包在凍結模型外面的 harness（system prompt、guardrails、memory、skills 等），
+「without ground-truth verifiers」（不靠標準答案驗證器），並把「evidence-supported lessons」（有證據支持的經驗）
+留給之後的任務。它回報的提升最多為 WorkBuddy-Bench 11.5 分、JobBench 4.5 分、LAB partial pass rate 11.8 個百分點。
+rak 不最佳化自己的 harness。它的規則本來就是要在其他東西都在變的時候保持不變，所以放在 hook 與雜湊凍結的腳本裡，
+而不是放在調整工具會去改的 prompt 與 skill 裡。我們沒有試過兩者一起用。
+
+**Meta-Harness**（Stanford、KRAFTON、MIT；[arXiv 2603.28052](https://arxiv.org/abs/2603.28052)、
+[程式碼](https://github.com/stanford-iris-lab/meta-harness)）。由一個 coding agent 讀取
+「the source code, scores, and execution traces of all prior candidates through a filesystem」
+（先前所有候選的原始碼、分數與執行軌跡），再改寫 harness 程式碼。Harness² 拿它當 baseline；兩者都在找更好的 harness。
+
+**autoresearch**（[karpathy/autoresearch](https://github.com/karpathy/autoresearch)）。agent 只改一個訓練檔，
+每跑 5 分鐘就決定保留或丟棄。評估檔「is read-only」這條規則寫在 `program.md`，也就是給 agent 的指示裡。
+在 rak 裡，同一條規則是把那個檔列進 `frozen_files`，由 hook 與判定腳本用雜湊核對。
+
+從這些系統借鏡的設計提案（尚未實作）：[docs/related-work-takeaways.md](docs/related-work-takeaways.md)。
+上面每一句所依據的原文引述：[docs/related-work-sources.md](docs/related-work-sources.md)。
+
 ## 還沒做到的
 
 - 還沒有公開 benchmark。捏造稽核（evals/fabrication-audit）設計好了、評分器過了自己的閘門，但還沒對 agent 跑過。

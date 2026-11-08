@@ -141,6 +141,51 @@ Doubao (Anthropic-compatible endpoints, keys from your environment), plus a posi
 **Only the Anthropic profile has been run by us** ([model-profiles.md](docs/model-profiles.md)). If you run another
 one, please open an issue with the control's output.
 
+## How this relates to other systems
+
+The systems below automate more of the research than research-agent-kit does, or optimize the agent itself.
+rak does neither. It adds rules, enforced in code, around an agent you already drive. None of these
+comparisons is measured: rak's own fabrication audit has not been run.
+
+**AI Scientist v1 and v2** (Sakana AI; [v1](https://arxiv.org/abs/2408.06292), [v2](https://arxiv.org/abs/2504.08066)).
+Idea-to-paper pipelines scored by an automated reviewer; v2 drops v1's code templates for an agentic tree search.
+Both READMEs ([v1](https://github.com/SakanaAI/AI-Scientist), [v2](https://github.com/SakanaAI/AI-Scientist-v2))
+warn that they run LLM-written code and ask you to sandbox it. Sakana reported that v1, on hitting a timeout,
+"tried to modify its own code to extend the timeout period" ([blog](https://sakana.ai/ai-scientist/)), and that v2
+"occasionally made embarrassing citation errors" ([blog](https://sakana.ai/ai-scientist-first-publication/)).
+In rak, run limits (max-run, idle deletion) run on the VM, not in code the agent edits, and paper metadata comes
+only from arXiv/DOI APIs.
+
+**The Agentic Scientist** (Sakana AI; [arXiv 2610.18933](https://arxiv.org/abs/2610.18933), repo
+[AI-Scientist-v3](https://github.com/SakanaAI/AI-Scientist-v3)). Drives coding agents such as Claude Code and
+Codex from a task file through ideas, ablations, "a sealed final evaluation" and a paper. Much of its checking is
+in code: each idea must state "a falsifiable hypothesis" before it runs, the writer "may only cite keys" that a
+script retrieved from bibliographic APIs, and an audit agent checks the paper's claims against the evidence.
+It automates far more than rak, and rak has nothing like its sealed final evaluation. rak instead enforces a
+frozen pre-registration, a positive/negative-control gate before results are read, and append-only results. Its authors note that
+rubrics "check only the criteria they enumerate". rak's checks have the same limit.
+
+**Harness²** (Google Cloud AI Research and Northwestern University;
+[arXiv 2610.14224](https://arxiv.org/abs/2610.14224), [code](https://github.com/google-research/harness2)).
+Improves the harness around a frozen model (system prompt, guardrails, memory, skills and more) between attempts
+at the same task, using separate improver sessions and "without ground-truth verifiers", and keeps "evidence-supported lessons" for later tasks. It reports gains of up
+to 11.5 points on WorkBuddy-Bench, 4.5 on JobBench and 11.8 percentage points on LAB's partial pass rate.
+rak does not optimize its harness. Its rules are meant to stay fixed while everything else changes, so they sit in
+hooks and hash-frozen scripts rather than in the prompts and skills a tuner would edit. We have not tried the two together.
+
+**Meta-Harness** (Stanford, KRAFTON, MIT; [arXiv 2603.28052](https://arxiv.org/abs/2603.28052),
+[code](https://github.com/stanford-iris-lab/meta-harness)). A coding agent rewrites harness code after reading "the
+source code, scores, and execution traces of all prior candidates through a filesystem". Harness² uses it as a
+baseline; both search for a better harness.
+
+**autoresearch** ([karpathy/autoresearch](https://github.com/karpathy/autoresearch)). An agent edits one training
+file and keeps or discards each 5-minute run. That the evaluation file "is read-only" is stated in `program.md`,
+the agent's instructions. In rak the same rule is a file listed under `frozen_files`, which the hook and the
+verdict script check by hash.
+
+Design proposals drawn from these systems (not implemented): [docs/related-work-takeaways.md](docs/related-work-takeaways.md).
+Sources, with the quotes each sentence above rests on: [docs/related-work-sources.md](docs/related-work-sources.md).
+
 ## What is not done
 
 - No public benchmark yet. The fabrication audit ([evals/fabrication-audit](evals/fabrication-audit)) is designed and its

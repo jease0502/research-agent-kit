@@ -2,12 +2,48 @@
 
 English: [README.md](README.md)
 
-**AI 研究 agent 的護欄，寫成程式碼而不是提示詞。** 預登記、先過對照才准下結論、結果只能追加、沙箱。
-規則在客戶端執行、不在模型裡，所以換哪個模型都一樣。
+**AI 研究 agent 會回報沒跑出來的數字、看完資料才移動判準、只留看起來最好的那次。這套工具用程式碼讓這些捷徑走不通
+（hook、凍結的判定腳本、沙箱），而不是在提示詞裡請模型守規矩。**
 
-> *示範 GIF 之後補上。在那之前，可以照[英文版的步驟](README.md#see-it-block-something-in-5-minutes)在自己的終端機看到同樣的阻擋。*
+![agent 想在沒有預登記時訓練、在對照沒過時讀結論、改鬆已凍結的門檻，每一次都被拒絕](docs/demo/demo.gif)
 
-架構圖見[英文版](README.md)。
+<sub>在這個 repo 的乾淨 clone（`1f6f391`）上真實執行錄下：沒有模型、沒有 API key、花費 0。每一行都是真實輸出；
+只有第 3 步的閘門數值是為示範打的假數字。執行的指令與擷取的輸出見 [docs/demo](docs/demo)。</sub>
+
+## 30 秒試一下
+
+不需要 API key。hook 收到的 JSON 和 Claude Code 呼叫它時一樣：
+
+```bash
+git clone https://github.com/jease0502/research-agent-kit && cd research-agent-kit/examples/friction-dr-anymal
+echo '{"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"python train.py --seed 1"}}' \
+  | python ../../plugins/rak-discipline/hooks/guard.py
+# rak-discipline blocked this call: this looks like an experiment launch (matches experiment_patterns)
+# but carries no RAK_PREREG=<id>. Freeze a prereg first, then launch with that id.
+```
+
+後面的步驟（凍結、閘門、被拒絕的判定）見英文版的 [5 分鐘步驟](README.md#see-it-block-something-in-5-minutes)。
+要讓 agent 用，把 plugin 裝進 Claude Code（2.1.295 以上）：
+
+```bash
+claude plugin marketplace add jease0502/research-agent-kit
+claude plugin install rak-discipline@research-agent-kit
+```
+
+## 跟「把規則寫進提示詞」差在哪
+
+| | 寫在 CLAUDE.md 或系統提示詞 | research-agent-kit |
+|---|---|---|
+| 規則放在哪 | 模型的上下文裡；agent 平常工作就會改這些檔（[mcp-server.md](docs/mcp-server.md)） | hook 與判定腳本裡，在模型之外 |
+| 還沒定義「成功」就開始訓練 | 看模型有沒有照做 | 沒有凍結的預登記，hook 拒絕啟動 |
+| 資料出來後把門檻改鬆 | 沒有檢查，除非有人去看 diff | 凍結時的雜湊對不上，hook 與判定腳本都拒絕 |
+| 對照沒過就讀結論 | 看模型有沒有照做 | 閘門不是 PASS，`verdict.py judge` 就拒絕；hook 更早攔下 |
+| 換成別的模型 | 看那個模型怎麼照做 | hook 在客戶端執行，規則不變。我們只實測過 Anthropic（[見下](#也能接其他模型)） |
+| 擋不到什麼 | | hook 比對的是指令文字：改名的腳本或 `python -c` 不會被認成實驗（[還沒做到的](#還沒做到的)） |
+
+這張比較是依設計推論的，不是量測結果：能量測它的捏造稽核還沒跑。
+
+## 擋下哪些捷徑
 
 AI 研究 agent 會找論文、跑實驗、寫程式；依它們作者自己的報告，也會引用不存在的論文、回報沒跑出來的數字、挑看起來最好的結果。
 這套工具不試圖讓模型更誠實，而是讓這些捷徑走不通：
@@ -20,13 +56,17 @@ AI 研究 agent 會找論文、跑實驗、寫程式；依它們作者自己的�
 | 憑記憶引用論文 | `rak add-paper` 的 metadata 只來自 arXiv／DOI API；`rak cite-check` 逐字比對標題 |
 | 雲端 GPU 忘了關 | max-run、閒置自刪與等待器在 **VM 上、agent 之外**執行；宣告的產出逐檔驗證後才刪機器 |
 
+規則在客戶端執行、不在模型裡，所以換哪個模型都一樣。架構圖見[英文版](README.md#how-it-fits-together)。
+
 ## 安裝
 
 ```bash
-claude plugin install rak-discipline --marketplace jease0502/research-agent-kit   # Claude Code 2.1.295 以上
+claude plugin marketplace add jease0502/research-agent-kit     # Claude Code 2.1.295 以上
+claude plugin install rak-discipline@research-agent-kit
 ```
 
-其他 plugin（`rak-knowledge`、`rak-team`、`rak-cloud`）裝法相同。`rak` CLI：
+其他 plugin 裝法相同（`rak-knowledge@research-agent-kit`、`rak-team@…`、`rak-cloud@…`）。
+`rak` CLI：
 `pip install "git+https://github.com/jease0502/research-agent-kit#subdirectory=python"`（Python 3.11 以上，尚未上 PyPI）。
 
 ## 5 分鐘看它擋下一件事

@@ -2,11 +2,68 @@
 
 中文說明：[README.zh-TW.md](README.zh-TW.md)
 
-**Guardrails for AI research agents, enforced in code instead of prompts.** Pre-registration, control-gated
-verdicts, append-only results and a sandbox. The rules run in the client, not in the model, so they stay the same
-whichever model you plug in.
+**AI research agents report numbers no run produced, move the success criterion after seeing the data, and keep
+the run that looks best. This kit makes those shortcuts fail in code (hooks, a frozen verdict script, a sandbox)
+instead of asking the model to behave in a prompt.**
 
-> *Demo GIF to come. Until then, [the walkthrough below](#see-it-block-something-in-5-minutes) shows the same block in your own terminal.*
+![An agent tries to train without a pre-registration, read a verdict while a control fails, and loosen a frozen threshold; each call is refused](docs/demo/demo.gif)
+
+<sub>Recorded from a real run on a fresh clone of this repository (`1f6f391`): no model, no API key, cost 0. Every
+line is the real output; only the gate values in step 3 are toy numbers typed for the demo. The commands and their
+captured output: [docs/demo](docs/demo).</sub>
+
+## Try it in 30 seconds
+
+No API key. The hook is called with the same JSON Claude Code sends it:
+
+```bash
+git clone https://github.com/jease0502/research-agent-kit && cd research-agent-kit/examples/friction-dr-anymal
+echo '{"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"python train.py --seed 1"}}' \
+  | python ../../plugins/rak-discipline/hooks/guard.py
+# rak-discipline blocked this call: this looks like an experiment launch (matches experiment_patterns)
+# but carries no RAK_PREREG=<id>. Freeze a prereg first, then launch with that id.
+```
+
+The rest of the chain (freeze, gate, a refused verdict) is in [the 5-minute walkthrough](#see-it-block-something-in-5-minutes).
+To use it with an agent, install the plugins into Claude Code (2.1.295 or later):
+
+```bash
+claude plugin marketplace add jease0502/research-agent-kit
+claude plugin install rak-discipline@research-agent-kit
+```
+
+## How this differs from writing the rule in the prompt
+
+| | A rule in CLAUDE.md or the system prompt | research-agent-kit |
+|---|---|---|
+| Where the rule lives | In the model's context. Agents edit context files as normal work ([mcp-server.md](docs/mcp-server.md)) | In a hook and in the verdict script, outside the model |
+| Training starts before "success" is defined | Depends on the model following it | The hook refuses a launch without a frozen prereg |
+| A threshold is loosened after the data is in | No check, unless someone reads the diff | The frozen hash no longer matches; the hook and the verdict script refuse |
+| The verdict is read while a control fails | Depends on the model following it | `verdict.py judge` refuses unless the gate is PASS; the hook stops the attempt earlier |
+| You switch to another model | Depends on how that model follows it | The hook runs in the client, so the rule does not change. Only the Anthropic profile has been run by us ([below](#works-with-other-models)) |
+| What it misses | | Hooks match command text: a renamed script or `python -c` is not seen as an experiment ([What is not done](#what-is-not-done)) |
+
+The comparison is by construction, not measured: the fabrication audit that would measure it has not been run yet.
+
+## The shortcuts it stops
+
+AI research agents can find papers, run experiments and write code. What they also do, by their authors' own
+reports, is cite papers that do not exist, report numbers no run produced, and pick whichever result looks best.
+This kit doesn't try to make the model more honest. It makes the dishonest shortcuts fail:
+
+| The shortcut | What stops it |
+|---|---|
+| Launch the experiment first, decide what "success" means afterwards | No job starts unless its pre-registration is **frozen** (hash-checked) |
+| A metric that quietly measures something else | The verdict script refuses to read results until a **positive and a negative control** have passed through the same pipeline |
+| Rewrite a result that turned out wrong | Results are **append-only**: committed lines can't be edited; corrections are numbered errata |
+| Cite a paper from memory | `rak add-paper` takes metadata from the arXiv/DOI API only; `rak cite-check` matches titles word for word |
+| A cloud GPU left running | max-run, idle self-delete and a waiter run **on the VM and outside the agent**; nothing is deleted until every declared output is verified |
+
+**Status: early (v0.0.1).** Nothing here is stable yet; interfaces may change between versions.
+
+## How it fits together
+
+The rules run in the client, not in the model, so they stay the same whichever model you plug in.
 
 ```mermaid
 flowchart LR
@@ -23,27 +80,14 @@ flowchart LR
   W --> C[CI: private-name scan,<br/>frozen hashes, append-only results]
 ```
 
-AI research agents can find papers, run experiments and write code. What they also do, by their authors' own
-reports, is cite papers that do not exist, report numbers no run produced, and pick whichever result looks best.
-This kit doesn't try to make the model more honest. It makes the dishonest shortcuts fail:
-
-| The shortcut | What stops it |
-|---|---|
-| Launch the experiment first, decide what "success" means afterwards | No job starts unless its pre-registration is **frozen** (hash-checked) |
-| A metric that quietly measures something else | The verdict script refuses to read results until a **positive and a negative control** have passed through the same pipeline |
-| Rewrite a result that turned out wrong | Results are **append-only**: committed lines can't be edited; corrections are numbered errata |
-| Cite a paper from memory | `rak add-paper` takes metadata from the arXiv/DOI API only; `rak cite-check` matches titles word for word |
-| A cloud GPU left running | max-run, idle self-delete and a waiter run **on the VM and outside the agent**; nothing is deleted until every declared output is verified |
-
-**Status: early (v0.0.1).** Nothing here is stable yet; interfaces may change between versions.
-
 ## Install
 
 ```bash
-claude plugin install rak-discipline --marketplace jease0502/research-agent-kit   # Claude Code 2.1.295+
+claude plugin marketplace add jease0502/research-agent-kit     # Claude Code 2.1.295+
+claude plugin install rak-discipline@research-agent-kit
 ```
 
-The other plugins (`rak-knowledge`, `rak-team`, `rak-cloud`) install the same way. The `rak` CLI:
+The other plugins install the same way (`rak-knowledge@research-agent-kit`, `rak-team@…`, `rak-cloud@…`). The `rak` CLI:
 `pip install "git+https://github.com/jease0502/research-agent-kit#subdirectory=python"` (Python 3.11+; not on PyPI yet).
 
 ## See it block something in 5 minutes

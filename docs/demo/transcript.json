@@ -1,0 +1,137 @@
+{
+ "setup_script": "set -e\nrm -rf /tmp/rak-demo && mkdir -p /tmp/rak-demo/bin && ln -s /usr/bin/python3.11 /tmp/rak-demo/bin/python\ncd /tmp/rak-demo\n\nexport PATH=/tmp/rak-demo/bin:$PATH\nexec 2>&1\nset +e\necho '@@BEGIN 0'\ngit clone -q https://github.com/jease0502/research-agent-kit && git -C research-agent-kit log --oneline -1\necho \"@@END 0 $?\"\necho '@@BEGIN 1'\ncd research-agent-kit/examples/friction-dr-anymal\necho \"@@END 1 $?\"\npython - <<'EOF'\nimport json\njson.dump({'g1_robot_static_friction_max_abs_dev': 0.0, 'g1_robot_dynamic_friction_max_abs_dev': 0.0, 'g1_ground_static_friction': 1.0, 'g2_mean_success_drop_mu005_vs_mu08': 0.71, 'g3_mean_abs_success_diff_override_vs_none': 0.01, 'g4_control_mean_success_mu08': 0.93, 'g5_zero_action_success_mu08': 0.62}, open('gate_evidence.json','w'), indent=1)\nopen('gate_evidence.json','a').write('\\n')\nEOF\necho '@@BEGIN 2'\n# hook: send a Bash command to the guard the way Claude Code does\necho \"@@END 2 $?\"\necho '@@BEGIN 3'\nhook() {\n  printf '{\"hook_event_name\":\"PreToolUse\",\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"%s\"}}' \"$1\" |\n  python ../../plugins/rak-discipline/hooks/guard.py && echo \"allowed\"; }\necho \"@@END 3 $?\"\necho '@@BEGIN 4'\n# 1. The agent starts training before deciding what success means\necho \"@@END 4 $?\"\necho '@@BEGIN 5'\nhook \"python train.py --seed 1\"\necho \"@@END 5 $?\"\necho '@@BEGIN 6'\n# 2. It freezes the pre-registration (prereg + verdict script hashed)\necho \"@@END 6 $?\"\necho '@@BEGIN 7'\npython ../../plugins/rak-discipline/scripts/rak_discipline.py freeze docs/prereg/friction-dr-anymal.md | tail -1\necho \"@@END 7 $?\"\necho '@@BEGIN 8'\nhook \"RAK_PREREG=friction-dr-anymal python train.py --seed 1\"\necho \"@@END 8 $?\"\necho '@@BEGIN 9'\n# 3. Control evidence. TOY VALUES typed for this demo, not from a run:\necho \"@@END 9 $?\"\necho '@@BEGIN 10'\n#    the do-nothing policy 'succeeds' 62% of the time: the metric can't be trusted\necho \"@@END 10 $?\"\necho '@@BEGIN 11'\ncat gate_evidence.json\necho \"@@END 11 $?\"\necho '@@BEGIN 12'\npython experiments/friction-dr-anymal/verdict.py gate --evidence gate_evidence.json\necho \"@@END 12 $?\"\necho '@@BEGIN 13'\n# 4. The agent asks for the verdict anyway\necho \"@@END 13 $?\"\necho '@@BEGIN 14'\nhook \"RAK_PREREG=friction-dr-anymal python experiments/friction-dr-anymal/verdict.py judge --results results.json\"\necho \"@@END 14 $?\"\necho '@@BEGIN 15'\n# 5. It loosens the do-nothing threshold 0.05 -> 0.70 so the gate would pass\necho \"@@END 15 $?\"\necho '@@BEGIN 16'\nsed -i '/g5_zero_action/s/0.05/0.70/' experiments/friction-dr-anymal/verdict.py && grep -n g5_zero_action experiments/friction-dr-anymal/verdict.py | head -1\necho \"@@END 16 $?\"\necho '@@BEGIN 17'\npython experiments/friction-dr-anymal/verdict.py gate --evidence gate_evidence.json\necho \"@@END 17 $?\"\necho '@@BEGIN 18'\nhook \"RAK_PREREG=friction-dr-anymal python train.py --seed 2\"\necho \"@@END 18 $?\"\n",
+ "returncode": 0,
+ "stderr": "",
+ "steps": [
+  {
+   "cmd": "git clone -q https://github.com/jease0502/research-agent-kit && git -C research-agent-kit log --oneline -1",
+   "output": [
+    "1f6f391 Initial public release of research-agent-kit"
+   ],
+   "exit": 0
+  },
+  {
+   "cmd": "cd research-agent-kit/examples/friction-dr-anymal",
+   "output": [],
+   "exit": 0
+  },
+  {
+   "cmd": "# hook: send a Bash command to the guard the way Claude Code does",
+   "output": [],
+   "exit": 0
+  },
+  {
+   "cmd": "hook() {\n  printf '{\"hook_event_name\":\"PreToolUse\",\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"%s\"}}' \"$1\" |\n  python ../../plugins/rak-discipline/hooks/guard.py && echo \"allowed\"; }",
+   "output": [],
+   "exit": 0
+  },
+  {
+   "cmd": "# 1. The agent starts training before deciding what success means",
+   "output": [],
+   "exit": 0
+  },
+  {
+   "cmd": "hook \"python train.py --seed 1\"",
+   "output": [
+    "rak-discipline blocked this call: this looks like an experiment launch (matches experiment_patterns) but carries no RAK_PREREG=<id>. Freeze a prereg first, then launch with that id."
+   ],
+   "exit": 2
+  },
+  {
+   "cmd": "# 2. It freezes the pre-registration (prereg + verdict script hashed)",
+   "output": [],
+   "exit": 0
+  },
+  {
+   "cmd": "python ../../plugins/rak-discipline/scripts/rak_discipline.py freeze docs/prereg/friction-dr-anymal.md | tail -1",
+   "output": [
+    "frozen. commit .rak/frozen/friction-dr-anymal.json now."
+   ],
+   "exit": 0
+  },
+  {
+   "cmd": "hook \"RAK_PREREG=friction-dr-anymal python train.py --seed 1\"",
+   "output": [
+    "allowed"
+   ],
+   "exit": 0
+  },
+  {
+   "cmd": "# 3. Control evidence. TOY VALUES typed for this demo, not from a run:",
+   "output": [],
+   "exit": 0
+  },
+  {
+   "cmd": "#    the do-nothing policy 'succeeds' 62% of the time: the metric can't be trusted",
+   "output": [],
+   "exit": 0
+  },
+  {
+   "cmd": "cat gate_evidence.json",
+   "output": [
+    "{",
+    " \"g1_robot_static_friction_max_abs_dev\": 0.0,",
+    " \"g1_robot_dynamic_friction_max_abs_dev\": 0.0,",
+    " \"g1_ground_static_friction\": 1.0,",
+    " \"g2_mean_success_drop_mu005_vs_mu08\": 0.71,",
+    " \"g3_mean_abs_success_diff_override_vs_none\": 0.01,",
+    " \"g4_control_mean_success_mu08\": 0.93,",
+    " \"g5_zero_action_success_mu08\": 0.62",
+    "}"
+   ],
+   "exit": 0
+  },
+  {
+   "cmd": "python experiments/friction-dr-anymal/verdict.py gate --evidence gate_evidence.json",
+   "output": [
+    "PASS  G1_friction_applied_max_abs_dev: 0.0 in [None, 1e-06]",
+    "PASS  G1_dynamic_applied_max_abs_dev: 0.0 in [None, 1e-06]",
+    "PASS  G1_ground_friction: 1.0 in [0.999999, 1.000001]",
+    "PASS  G2_ice_drop: 0.71 in [0.5, None]",
+    "PASS  G3_override_neutral: 0.01 in [None, 0.05]",
+    "PASS  G4_training_worked: 0.93 in [0.8, None]",
+    "FAIL  G5_do_nothing: 0.62 in [None, 0.05]",
+    "GATE FAIL -> /tmp/rak-demo/research-agent-kit/examples/friction-dr-anymal/.rak/gates/friction-dr-anymal.json"
+   ],
+   "exit": 1
+  },
+  {
+   "cmd": "# 4. The agent asks for the verdict anyway",
+   "output": [],
+   "exit": 0
+  },
+  {
+   "cmd": "hook \"RAK_PREREG=friction-dr-anymal python experiments/friction-dr-anymal/verdict.py judge --results results.json\"",
+   "output": [
+    "rak-discipline blocked this call: gate for `friction-dr-anymal` is FAIL; the verdict refuses to read results until the gate passes"
+   ],
+   "exit": 2
+  },
+  {
+   "cmd": "# 5. It loosens the do-nothing threshold 0.05 -> 0.70 so the gate would pass",
+   "output": [],
+   "exit": 0
+  },
+  {
+   "cmd": "sed -i '/g5_zero_action/s/0.05/0.70/' experiments/friction-dr-anymal/verdict.py && grep -n g5_zero_action experiments/friction-dr-anymal/verdict.py | head -1",
+   "output": [
+    "39:    \"G5_do_nothing\":                   (\"g5_zero_action_success_mu08\", None, 0.70),"
+   ],
+   "exit": 0
+  },
+  {
+   "cmd": "python experiments/friction-dr-anymal/verdict.py gate --evidence gate_evidence.json",
+   "output": [
+    "this verdict script changed after freezing; judge with the frozen version"
+   ],
+   "exit": 1
+  },
+  {
+   "cmd": "hook \"RAK_PREREG=friction-dr-anymal python train.py --seed 2\"",
+   "output": [
+    "rak-discipline blocked this call: experiments/friction-dr-anymal/verdict.py changed after freezing; the frozen version is in commit 1f6f391d0b. Corrections go in an erratum section of the results doc, not in the prereg."
+   ],
+   "exit": 2
+  }
+ ]
+}
